@@ -17,20 +17,12 @@
 # Settings -> Privacy & Security -> Open Anyway), not for public distribution.
 # Operator setup for both signing tiers: docs/CODE_SIGNING.md.
 #
-# publish-test=true additionally publishes everything as a public PRE-release on
-# starnet-releases (needs RELEASES_TOKEN, same secret release.yml uses) — a shareable
-# no-login download link whose release notes ARE the per-OS install instructions.
-# Pre-releases never become the repo's "latest", so the Windows updater feed
-# (releases/latest/download/latest.json) cannot be disturbed by a test publish.
+# AlphaVerse only builds internal test artifacts. No upstream releases are published.
 name: desktop-build
 
 on:
   workflow_dispatch:
     inputs:
-      publish-test:
-        description: "Publish a public test pre-release to starnet-releases (shareable download link)"
-        required: false
-        default: "false"
       google_early_access:
         description: "Google early access: open every Google service before Google verification (unverified-app warning, 100-user cap). Internal/beta builds only."
         required: false
@@ -176,20 +168,11 @@ jobs:
           if [ "$RUNNER_OS" = "macOS" ] && [ -z "$APPLE_CERTIFICATE" ]; then
             echo "::warning::no Apple signing cert in secrets — DMG will be UNSIGNED (internal testing only)"
           fi
-          # Windows Authenticode tier: with the AZURE_* service-principal secrets present,
-          # inject a signCommand pointing at Azure Artifact Signing. Tauri signs the app exe,
-          # NSIS components, and installer; the checksum-verified Node externalBin retains its
-          # upstream OpenJS Foundation Authenticode signature. Config is injected via --config
-          # so local/keyless builds never try to reach Azure.
+          # AlphaVerse does not inherit the upstream publisher's signing identity.
+          # Provide a separate signing workflow when independent certificates are ready.
           SIGN_CFG=""
           if [ "$RUNNER_OS" = "Windows" ]; then
-            if [ -n "${AZURE_CLIENT_SECRET:-}" ] && [ -n "${AZURE_CLIENT_ID:-}" ] && [ -n "${AZURE_TENANT_ID:-}" ]; then
-              cargo install trusted-signing-cli --locked
-              SIGN_CFG='{"bundle":{"windows":{"signCommand":"trusted-signing-cli -e https://eus.codesigning.azure.net -a starnet-signing -c starnet-public %1"}}}'
-              echo "::notice::Windows Authenticode signing ENABLED (Azure Artifact Signing: starnet-signing/starnet-public)"
-            else
-              echo "::warning::no Azure Trusted Signing secrets — Windows exe/installer will be UNSIGNED (SmartScreen warning for users)"
-            fi
+            echo "::warning::AlphaVerse build is unsigned (development-only)"
           fi
           if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
             echo "::notice::no updater signing key in secrets — building installers without updater artifacts"
