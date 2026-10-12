@@ -1,0 +1,21 @@
+name: AlphaVerse identity and isolation
+
+on:
+  pull_request:
+  push:
+    branches: [feat/harness-backend]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-alphaverse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: AlphaVerse identity and syntax smoke checks
+        run: npm run verify:alphaverse

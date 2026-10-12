@@ -41,6 +41,7 @@ The desktop build has **not yet been verified on Windows/macOS for AlphaVerse**.
 ### Tests
 
 ```bash
+npm run verify:alphaverse
 npm run test:fast
 npm run test:http
 npm test
