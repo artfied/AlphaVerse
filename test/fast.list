@@ -201,7 +201,7 @@ test/t2-state-safety.test.js
 test/upgrade-085-090.test.js
 test/t3-release-smoke.test.js
 test/t4-update-delivery.test.js
-test/installer-upgrade-resilience.test.js
+# retired upstream release-train test (see ALPHAVERSE_MIGRATION.md): test/installer-upgrade-resilience.test.js
 test/t5-public-distribution.test.js
 test/minisign-verify.test.js
 test/release-assemble-manifest.test.js
@@ -872,16 +872,16 @@ test/release-preflight.test.js
 test/release-ritual.test.js
 test/release-installer-selection.test.mjs
 test/opensource-readiness.test.js
-test/source-release-mirror.test.js
-test/release-train-chrome-warmup.test.js
-test/release-train-provenance.test.js
+# retired upstream release-train test (see ALPHAVERSE_MIGRATION.md): test/source-release-mirror.test.js
+# retired upstream release-train test (see ALPHAVERSE_MIGRATION.md): test/release-train-chrome-warmup.test.js
+# retired upstream release-train test (see ALPHAVERSE_MIGRATION.md): test/release-train-provenance.test.js
 test/frontend-dist-staging.test.js
 test/desktop-build-macos-notarization.test.js
 test/desktop-build-macos-python-host.test.js
 test/desktop-artifact-open.test.js
-test/release-train-macos-trust.test.js
-test/release-train-windows-trust.test.js
-test/release-contract-docs.test.js
+# retired upstream release-train test (see ALPHAVERSE_MIGRATION.md): test/release-train-macos-trust.test.js
+# retired upstream release-train test (see ALPHAVERSE_MIGRATION.md): test/release-train-windows-trust.test.js
+# retired upstream release-train test (see ALPHAVERSE_MIGRATION.md): test/release-contract-docs.test.js
 test/website-deploy-staging.test.js
 test/website-app-sync.test.js
 test/website-live-preview.test.js

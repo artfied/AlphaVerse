@@ -45,7 +45,7 @@ The inherited tree has approximately **50,404 Git tree entries**, dominated by v
 | `test/`, `qa/` | Verification and evidence | Retained for reproducibility |
 | `LICENSE`, `NOTICE.md` | Licensing / attribution | Required; retained |
 
-Five obsolete/upstream release-oriented GitHub workflows have been removed. The remaining `desktop-build.yml` is development-only.
+Five obsolete/upstream release-oriented GitHub workflows have been removed. The seven fast-gate tests exclusively asserting those removed release workflows/upgrade publishing were commented out of `test/fast.list` rather than silently deleted; they remain as historical source. The new AlphaVerse-specific isolation gate replaces the security assertions about upstream publishing. The remaining `desktop-build.yml` is development-only.
 
 ## Required validation before merge or distribution
 
