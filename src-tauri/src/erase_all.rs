@@ -1,13 +1,13 @@
 //! #65 ERASE EVERYTHING: what a full "start over from scratch" removes, and the guarded deletion itself.
 //!
 //! The reporter (macOS) deleted the app and reinstalled, and "everything remained": uninstalling removes only the
-//! program, while StarNet's data lives in a separate per-user app-data folder, the WebView keeps its own storage,
+//! program, while AlphaVerse's data lives in a separate per-user app-data folder, the WebView keeps its own storage,
 //! and credentials sit in the OS keychain. START FRESH (fresh_start.rs) deliberately keeps the old station in a
 //! quarantine folder. This module is the other door: it DELETES.
 //!
 //! Safety rules (each one is tested below):
-//!   * Only StarNet-owned locations are ever targets: every target must sit under a path component named
-//!     `ai.skynet.harness`, `StarNet`, `Skynet` or `starnet` and be at least three components deep. A user's project
+//!   * Only AlphaVerse-owned locations are ever targets: every target must sit under a path component named
+//!     `io.github.artfied.alphaverse`, `AlphaVerse`, `Skynet` or `starnet` and be at least three components deep. A user's project
 //!     folder, home folder or a filesystem root can never qualify, whatever a caller passes.
 //!   * Links are never followed: a symlink/junction inside a target (or a target that is itself a link) is removed
 //!     as a link; whatever it points at is untouched. Trusted project folders are recorded by PATH in the station
@@ -20,9 +20,9 @@
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 
-const OWNED_NAMES: [&str; 3] = ["ai.skynet.harness", "starnet", "skynet"];
+const OWNED_NAMES: [&str; 1] = ["io.github.artfied.alphaverse"];
 
-/// True when `path` is one StarNet owns outright (see the module rules).
+/// True when `path` is one AlphaVerse owns outright (see the module rules).
 pub fn is_starnet_owned(path: &Path) -> bool {
     let normal: Vec<String> = path
         .components()
@@ -48,11 +48,11 @@ fn is_webview_dir(name: &str) -> bool {
 }
 
 /// Everything the erase deletes, in order. `app_data` is the parent of the active `workspaces` (the
-/// `ai.skynet.harness` app-data folder); its every entry except the fresh `workspaces` and a WebView folder is
-/// StarNet's (logs, lifecycle prefs, update snapshots, START FRESH quarantines, migration/erase leftovers).
+/// `io.github.artfied.alphaverse` app-data folder); its every entry except the fresh `workspaces` and a WebView folder is
+/// AlphaVerse's (logs, lifecycle prefs, update snapshots, START FRESH quarantines, migration/erase leftovers).
 /// `set_aside` is the old generation moved aside by fresh_start::set_aside_for_erase. `legacy_roots` are older
-/// StarNet data roots (only those under app-data bases are passed in; never the install folder). `extra` holds
-/// other StarNet caches (the local voice-model download).
+/// AlphaVerse data roots (only those under app-data bases are passed in; never the install folder). `extra` holds
+/// other AlphaVerse caches (the local voice-model download).
 pub fn plan_targets(
     app_data: &Path,
     active_workspaces: &Path,
@@ -73,7 +73,7 @@ pub fn plan_targets(
         .file_name()
         .map(|n| {
             n.to_string_lossy()
-                .eq_ignore_ascii_case("ai.skynet.harness")
+                .eq_ignore_ascii_case("io.github.artfied.alphaverse")
         })
         .unwrap_or(false);
     if app_data_is_ours {
@@ -136,7 +136,7 @@ fn is_reparse_point(_meta: &fs::Metadata) -> bool {
     false
 }
 
-/// Delete every target that exists. Refuses (reports as failed) any target that is not StarNet-owned, so a caller
+/// Delete every target that exists. Refuses (reports as failed) any target that is not AlphaVerse-owned, so a caller
 /// mistake can never widen the erase. A short retry covers a just-exited process still releasing its files.
 pub fn remove_all(targets: &[PathBuf]) -> RemovalReport {
     let mut report = RemovalReport::default();
@@ -145,7 +145,7 @@ pub fn remove_all(targets: &[PathBuf]) -> RemovalReport {
         if !is_starnet_owned(target) {
             report
                 .failed
-                .push((shown, "refused: not a StarNet-owned location".to_string()));
+                .push((shown, "refused: not a AlphaVerse-owned location".to_string()));
             continue;
         }
         if fs::symlink_metadata(target).is_err() {
@@ -223,7 +223,7 @@ pub const PROVIDER_IDS: [&str; 18] = [
     "claude-cli",
 ];
 
-/// Every keychain account (service `ai.skynet.harness`) StarNet's desktop shell can have created.
+/// Every keychain account (service `io.github.artfied.alphaverse`) AlphaVerse's desktop shell can have created.
 pub fn keychain_accounts(channels: &[&str], telegram_bots: &[String]) -> Vec<String> {
     let mut out = Vec::new();
     for id in PROVIDER_IDS {
@@ -264,27 +264,27 @@ mod tests {
     #[test]
     fn ownership_guard_admits_only_starnet_locations() {
         assert!(is_starnet_owned(Path::new(
-            "/Users/a/Library/Application Support/ai.skynet.harness/workspaces"
+            "/Users/a/Library/Application Support/io.github.artfied.alphaverse/workspaces"
         )));
-        assert!(is_starnet_owned(Path::new(
-            "C:/Users/a/AppData/Local/StarNet/models"
+        assert!(!is_starnet_owned(Path::new(
+            "C:/Users/a/AppData/Local/AlphaVerse/models"
         )));
-        assert!(is_starnet_owned(Path::new(
+        assert!(!is_starnet_owned(Path::new(
             "/home/a/.local/share/Skynet/workspaces"
         )));
         assert!(!is_starnet_owned(Path::new("/Users/a/Projects/my-app")));
         assert!(!is_starnet_owned(Path::new("/Users/a")));
         assert!(!is_starnet_owned(Path::new("/")));
-        assert!(!is_starnet_owned(Path::new("/StarNet")));
+        assert!(!is_starnet_owned(Path::new("/AlphaVerse")));
         assert!(!is_starnet_owned(Path::new(
-            "C:/Users/a/Desktop/StarNet deliverables/report"
+            "C:/Users/a/Desktop/AlphaVerse deliverables/report"
         )));
     }
 
     #[test]
     fn plan_keeps_the_fresh_workspace_and_the_webview_and_skips_foreign_paths() {
         let root = scratch("plan");
-        let app = root.join("ai.skynet.harness");
+        let app = root.join("io.github.artfied.alphaverse");
         let ws = app.join("workspaces");
         for d in [
             ws.clone(),
@@ -298,7 +298,7 @@ mod tests {
         fs::write(app.join("startup.log"), b"x").unwrap();
         fs::write(app.join("lifecycle.json"), b"{}").unwrap();
         let user_project = root.join("Projects").join("my-app");
-        let legacy = root.join("StarNet").join("workspaces");
+        let legacy = root.join("io.github.artfied.alphaverse").join("legacy-workspaces");
         let plan = plan_targets(
             &app,
             &ws,
@@ -331,7 +331,7 @@ mod tests {
     #[test]
     fn removal_is_verified_and_never_follows_a_link_out_of_starnet_data() {
         let root = scratch("remove");
-        let app = root.join("ai.skynet.harness");
+        let app = root.join("io.github.artfied.alphaverse");
         let aside = app.join(".erasing-station-1");
         fs::create_dir_all(aside.join("agent-1").join("deep")).unwrap();
         fs::write(
@@ -369,7 +369,7 @@ mod tests {
             1,
             "the foreign target is refused, not deleted"
         );
-        assert!(report.failed[0].1.contains("not a StarNet-owned"));
+        assert!(report.failed[0].1.contains("not a AlphaVerse-owned"));
         let _ = fs::remove_dir_all(root);
     }
 
