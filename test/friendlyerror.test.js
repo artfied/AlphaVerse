@@ -361,7 +361,7 @@ for (const raw of [
     'BROWSER: a bare sidecar 500 keeps the local-service copy');
   A.eq(friendlyError(Object.assign(new Error('sidecar HTTP 500 — internal error'), { status: 500 })).kind,
     'server_error', 'DELEGATE: a bare sidecar 500 keeps the local-service copy');
-  A.ok(/local starnet service/i.test(KINDS.server_error.msg), 'the local copy still exists for the proven-local case');
+  A.ok(/local alphaverse service/i.test(KINDS.server_error.msg), 'the local copy still exists for the proven-local case');
   // the two ladders must agree on the flagship shape, or the halves drift again
   A.eq(kindFromRaw('anthropic http 529 - overloaded', null),
     friendlyError(new Error('Anthropic http 529 - Overloaded')).kind,
@@ -431,10 +431,10 @@ for (const raw of [
 {
   const interrupted = friendlyError('An earlier run was interrupted before its spend was recorded, so the spending limits you set can’t be checked. Settle it in SETTINGS › SPENDING LIMITS.');
   A.eq(interrupted.kind, 'spend_unknown', 'the interrupted-run refusal is spend_unknown');
-  A.ok(/earlier run stopped before StarNet recorded what it spent/.test(interrupted.userMessage) && /Settle that run in SETTINGS › SPENDING LIMITS/.test(interrupted.userMessage),
+  A.ok(/earlier run stopped before AlphaVerse recorded what it spent/.test(interrupted.userMessage) && /Settle that run in SETTINGS › SPENDING LIMITS/.test(interrupted.userMessage),
     'the interrupted cause names the run and the SETTLE fix (got: ' + interrupted.userMessage + ')');
   const unsaved = friendlyError('Spend history could not be saved to disk, so the spending limits you set can’t be checked. Restart StarNet to recover it.');
-  A.ok(/Restart StarNet/.test(unsaved.userMessage) && !/Settle/.test(unsaved.userMessage), 'a failed save says restart, never settle (got: ' + unsaved.userMessage + ')');
+  A.ok(/Restart AlphaVerse/.test(unsaved.userMessage) && !/Settle/.test(unsaved.userMessage), 'a failed save says restart, never settle (got: ' + unsaved.userMessage + ')');
   const unread = friendlyError('Spend history could not be read, so the spending limits you set can’t be checked. See SETTINGS › SPENDING LIMITS.');
   A.eq(unread.userMessage, KINDS.spend_unknown.msg, 'an unreadable record gets the cause-neutral headline');
   A.ok(/spend history is unknown/.test(KINDS.spend_unknown.msg), 'the fallback headline says spend history is unknown');
