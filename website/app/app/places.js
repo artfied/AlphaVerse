@@ -1,4 +1,4 @@
-/* frontend/app/places.js — PLACES: every place in StarNet a Commander can be shown, in the words the UI itself uses.
+/* frontend/app/places.js — PLACES: every place in AlphaVerse a Commander can be shown, in the words the UI itself uses.
 
    WHY (Andrew 2026-10-04: "the agents [should] understand EVERYTHING about starnet … so it can basically use itself
    instead of the user having to navigate"): an agent could change ~45 settings from chat but could not put ONE window
@@ -29,7 +29,7 @@
     P('to-review', 'MY WORK › DELIVERABLES › TO REVIEW', 'finished work waiting for the Commander\'s verdict, at the top of DELIVERABLES', { term: 'outbox' }),
     P('recipes', 'MY WORK › RECIPES', 'ready-made jobs to start in one click', { fn: 'recipes' }),
     P('workflows', 'AUTOMATE › WORKFLOWS', 'conveyor lines of agents on the floor: send a job down a line, see each line\'s output', { term: 'workflows' }),
-    P('schedules', 'AUTOMATE › SCHEDULES', 'routines: any job on a schedule (StarNet\'s own scheduler, never OS cron)', { term: 'automation', section: 'routines' }),
+    P('schedules', 'AUTOMATE › SCHEDULES', 'routines: any job on a schedule (AlphaVerse\'s own scheduler, never OS cron)', { term: 'automation', section: 'routines' }),
     P('new-schedule', 'AUTOMATE › SCHEDULES › NEW', 'the form for a new scheduled routine', { term: 'automation', section: 'routines-create' }),
     P('goal-loops', 'AUTOMATE › GOAL LOOPS', 'one objective repeated until it is done', { term: 'automation', section: 'loops' }),
     P('new-goal-loop', 'AUTOMATE › GOAL LOOPS › START', 'the form for a new goal loop', { term: 'automation', section: 'loops-start' }),
@@ -75,8 +75,8 @@
     P('settings-browser', 'SETTINGS › BROWSER', 'where the station browser runs, and RESET STATION BROWSER when it is stuck', { term: 'settings', section: 'browser' }),
     P('settings-app', 'SETTINGS › APP & BACKUP', 'startup, runtime limits, backups, updates, troubleshooting, START FRESH and ERASE EVERYTHING', { term: 'settings', section: 'system' }),
     P('notifications', 'NOTIFICATIONS', 'everything that happened and what is waiting on the Commander', { term: 'notifs' }),
-    P('updates', 'UPDATES', 'check for and install a StarNet update', { term: 'updates' }),
-    P('field-manual', 'FIELD MANUAL', 'the Commander\'s guide to StarNet', { term: 'manual' }),
+    P('updates', 'UPDATES', 'check for and install a AlphaVerse update', { term: 'updates' }),
+    P('field-manual', 'FIELD MANUAL', 'the Commander\'s guide to AlphaVerse', { term: 'manual' }),
     P('find', 'SYSTEM › FIND', 'one search over every window, agent and conversation (Ctrl+K from anywhere)', { term: 'find' })
   ]);
 
