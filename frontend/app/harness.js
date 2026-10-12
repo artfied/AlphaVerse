@@ -1,4 +1,4 @@
-/* STARNET — harness.js : the REAL agent harness (BYOK).
+/* ALPHAVERSE — harness.js : the REAL agent harness (BYOK).
    Owns the model connection + streaming + token/cost accounting.
 
    For this prototype the call goes browser -> OpenRouter directly (CORS-friendly,
@@ -167,7 +167,7 @@ const Harness = (() => {
   let apiToken = (typeof window !== 'undefined' && window.__STARNET_API_TOKEN__) ? String(window.__STARNET_API_TOKEN__) : '';
   let apiTokenPromise = null;
 
-  // TRUE only for our OWN sidecar API — a same-origin request under /api/. The X-StarNet-Token this gates is a
+  // TRUE only for our OWN sidecar API — a same-origin request under /api/. The X-AlphaVerse-Token this gates is a
   // PRIVATE local credential; a naive substring match on '/api/' would attach it to third-party URLs that merely
   // contain '/api/' (e.g. the OpenRouter fallback catalog https://openrouter.ai/api/v1/models), leaking the token
   // cross-origin AND forcing a CORS preflight OpenRouter rejects (so the fallback fails exactly when it's needed).
@@ -205,7 +205,7 @@ const Harness = (() => {
   function withApiToken(init, token) {
     init = Object.assign({}, init || {});
     const headers = new Headers(init.headers || {});
-    if (token) headers.set('X-StarNet-Token', token);
+    if (token) headers.set('X-AlphaVerse-Token', token);
     init.headers = headers;
     return init;
   }
@@ -370,7 +370,7 @@ const Harness = (() => {
   // who linked an account and never pasted a key has neither — so every boot would bounce them to the
   // connect screen demanding an API key they deliberately do not have.
   //
-  // Called again after a link/unlink so selecting STARNET does not wait for a page reload.
+  // Called again after a link/unlink so selecting ALPHAVERSE does not wait for a page reload.
   async function refreshCreditsConfigured() {
     selectionRevision++;
     try {
@@ -463,7 +463,7 @@ const Harness = (() => {
     // probe + app.js's status refresh) is the only local truth; in the browser the active-provider pick stands in.
     if (p === 'grok' || p === 'kimi') return DESKTOP ? !!_configuredByProvider[p] : (getProv() === p);
     if (p === 'ollama') return false;                      // an endpoint is configuration, never a credential
-    if (p === 'claude-cli') return false;                  // the local CLI's own sign-in is not a StarNet credential
+    if (p === 'claude-cli') return false;                  // the local CLI's own sign-in is not a AlphaVerse credential
     if (p === 'custom' && !getKey(p)) return false;        // a keyless custom endpoint must not manufacture a key row
     if (DESKTOP) return !!(_configuredByProvider[p] || (p === 'openrouter' && _configured));
     if (!!readScoped(LS.key, p)) return true;              // a real key is stored in this browser
@@ -616,8 +616,8 @@ const Harness = (() => {
     if (j.error) return String(j.error);
     const t = String(text == null ? '' : text).trim().slice(0, 80);
     if (status >= 200 && status < 300) return 'the provider did not verify this key';
-    const hint = /forbidden origin/.test(t) ? ' — this page’s address doesn’t match the station; open StarNet at the exact address you forward to it'
-      : /forbidden host/.test(t) ? ' — StarNet answers only on localhost / 127.0.0.1; reach it through a port forward, not a hostname'
+    const hint = /forbidden origin/.test(t) ? ' — this page’s address doesn’t match the station; open AlphaVerse at the exact address you forward to it'
+      : /forbidden host/.test(t) ? ' — AlphaVerse answers only on localhost / 127.0.0.1; reach it through a port forward, not a hostname'
       : /forbidden token/.test(t) ? ' — the station restarted since this page loaded; reload the page'
       : '';
     return 'the station refused the key check (HTTP ' + status + (t && !/^[{<]/.test(t) ? ' ' + t : '') + ')' + hint;
@@ -969,7 +969,7 @@ const Harness = (() => {
         body: JSON.stringify(reqBody)
       });
     } catch (e) {
-      throw new Error('cannot reach the STARNET sidecar — start it with `npm start` (node sidecar/index.js)');
+      throw new Error('cannot reach the ALPHAVERSE sidecar — start it with `npm start` (node sidecar/index.js)');
     }
     // A pre-stream failure's TRUE reason lives in the response body — runRouteFailure's {"error":"sidecar
     // failure: Not signed in to ChatGPT …"} JSON, handleRun's "missing key/model", the token gate's "forbidden
@@ -986,7 +986,7 @@ const Harness = (() => {
     const dec = new TextDecoder();
     let buf = '', full = '', lastUsage = null, runId = null, errMsg = null, endReason = null, finishReason = null, completionVerdict = 'not_assessed', effectVerdict = 'no_observed_effects';
     let budgetScope = null, budgetCapUsd = null;   // additive: WHICH spend cap ended a 'budget' run (+ its $ cap)
-    let budgetCapIsBalance = false;   // additive: that per-run ceiling was the StarNet balance (sidecar admission clamp)
+    let budgetCapIsBalance = false;   // additive: that per-run ceiling was the AlphaVerse balance (sidecar admission clamp)
     let sawLeadEnd = false;
 
     try {
@@ -1423,14 +1423,14 @@ const Harness = (() => {
     try { U.bus.on('agent.run.error', endContextRun); } catch (_) {}
   }
 
-  /* IS THE LOCAL ENGINE ACTUALLY UP? (2026-07-29 — the "Can't reach StarNet's local service" misdiagnosis.)
+  /* IS THE LOCAL ENGINE ACTUALLY UP? (2026-07-29 — the "Can't reach AlphaVerse's local service" misdiagnosis.)
      A dead response stream and a dead sidecar are INDISTINGUISHABLE from the thrown fetch error alone (see the
      long note on isTransportLoss in friendlyerror.js), and the app used to assert the sidecar was gone and tell
      people to restart — sending users chasing a phantom for days when the real drop was the model's stream.
      This is the measurement that turns that guess into proof.
 
      GET /api/health is the right probe and the only one that works here: it is in apiauth's TOKEN_EXEMPT set, so
-     it needs no X-StarNet-Token (a stale-token 403 would otherwise read as "dead" — a second lie), and its
+     it needs no X-AlphaVerse-Token (a stale-token 403 would otherwise read as "dead" — a second lie), and its
      handler is a bare writeHead(200)/end('ok') that touches no store, so it cannot itself fail for load reasons.
      Bounded by an AbortController, because a socket the sidecar accepted and never answered (the exact
      hung-request bug this fix exists for) would otherwise hang the error row forever. On timeout we return
@@ -1442,7 +1442,7 @@ const Harness = (() => {
      (Chromium appears to retry a dead keep-alive socket with a ~2s backoff before surfacing "Failed to fetch").
      Samples: 249,250,251,251,268,1754,1771,1773,1794,2015 + 251,1778,2030. A 2000ms budget therefore lands
      exactly ON the slow mode and half of all genuinely-dead engines time out into `null` — which is the ONE case
-     where "restart StarNet" is the correct advice, so it must not be lost to an impatient probe. 4000ms clears
+     where "restart AlphaVerse" is the correct advice, so it must not be lost to an impatient probe. 4000ms clears
      the observed tail ~2x. Cost is bounded and rare: the common in-band failure path proves liveness by receipt
      and never calls this at all, and a healthy engine answers /api/health in ~1ms.
      Resolves true | false | null. Never throws, never rejects. */

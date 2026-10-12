@@ -1,26 +1,9 @@
-# Security policy
+# Security policy — AlphaVerse
 
-## Supported versions
+AlphaVerse is an experimental fork of the MIT-licensed StarNet codebase, not an upstream-supported release. Please open non-sensitive bugs and feature requests at https://github.com/artfied/AlphaVerse/issues.
 
-Security fixes are made against the latest published StarNet release and the current default
-branch. Older versions may be asked to update before a fix can be applied.
+For vulnerabilities, use GitHub's **Report a vulnerability** private advisory workflow if available. Do not post private keys, passwords, security tokens or sensitive exploit details in public issues.
 
-## Reporting a vulnerability
+No official binary distribution, signing process or software update service has been established for AlphaVerse. The original StarNet update feed is not an AlphaVerse update feed.
 
-Please do not open a public issue, discussion, or pull request for a suspected vulnerability.
-Use one of these private channels:
-
-1. GitHub's **Report a vulnerability** button on the repository Security tab, when available.
-2. Email **androo.agi@gmail.com** with the subject `StarNet security report`.
-
-Include the affected version or commit, reproduction steps, impact, and any suggested mitigation.
-Remove real credentials and personal data from screenshots, logs, and proof-of-concept files.
-
-You should receive an acknowledgement within three business days. We will investigate, coordinate
-remediation and disclosure with you, and credit you unless you prefer to remain anonymous.
-
-## Scope
-
-Reports about secret handling, filesystem or network containment, permission/consent bypasses,
-update verification, cross-user data exposure, and unintended remote access are especially useful.
-Please test only against systems and data you own or are authorized to use.
+Third-party dependency and model-provider security responsibilities remain applicable.

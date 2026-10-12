@@ -1,4 +1,4 @@
-// StarNet — native desktop shell (Tauri v2).
+// AlphaVerse — native desktop shell (Tauri v2).
 //
 // Wraps the existing browser app: spawns the zero-dependency Node sidecar on a
 // private loopback port, waits for it to listen, then opens that URL in a native
@@ -318,7 +318,7 @@ impl KeepAwakeHandle {
         };
 
         let mut reason: Vec<u16> =
-            "StarNet scheduled tasks are allowed to run while the app is open"
+            "AlphaVerse scheduled tasks are allowed to run while the app is open"
                 .encode_utf16()
                 .chain(std::iter::once(0))
                 .collect();
@@ -517,7 +517,7 @@ fn workspace_path(app: &tauri::AppHandle) -> PathBuf {
                 .or_else(|| std::env::var_os("APPDATA"))
                 .map(PathBuf::from)
                 .unwrap_or_else(|| PathBuf::from("."));
-            base.join("ai.skynet.harness").join("workspaces")
+            base.join("io.github.artfied.alphaverse").join("workspaces")
         })
 }
 
@@ -547,7 +547,7 @@ fn legacy_workspace_paths(root: &Path, current: &Path) -> Vec<PathBuf> {
         .collect::<Vec<_>>();
     if let Some(home) = std::env::var_os("HOME").map(PathBuf::from) {
         // Tauri's live macOS root is ~/Library/Application Support/<bundle-id>, while old/manual Node
-        // sidecars used ~/.local/share/{StarNet,Skynet}. Both are migration sources; the current root is
+        // sidecars used ~/.local/share/{AlphaVerse,Skynet}. Both are migration sources; the current root is
         // filtered below. Linux receives the same POSIX fallback that sidecar/workspace-safety.js protects.
         if cfg!(target_os = "macos") {
             appdata_bases.push(home.join("Library").join("Application Support"));
@@ -555,9 +555,8 @@ fn legacy_workspace_paths(root: &Path, current: &Path) -> Vec<PathBuf> {
         appdata_bases.push(home.join(".local").join("share"));
     }
     for base in appdata_bases {
-        push_unique_path(&mut out, base.join("StarNet").join("workspaces"));
-        push_unique_path(&mut out, base.join("Skynet").join("workspaces"));
-        push_unique_path(&mut out, base.join("ai.skynet.harness").join("workspaces"));
+        // Do not automatically adopt another vendor application\u0027s saved data.
+        push_unique_path(&mut out, base.join("io.github.artfied.alphaverse").join("workspaces"));
     }
     push_unique_path(
         &mut out,
@@ -660,7 +659,7 @@ fn hash_file(path: &Path) -> std::io::Result<(u64, String)> {
 }
 
 /// A legacy root becomes an automatic station source only when its canonical save is readable and proves the
-/// StarNet save contract. This is intentionally stronger than "some JSON object": migration may carry other
+/// AlphaVerse save contract. This is intentionally stronger than "some JSON object": migration may carry other
 /// durable stores, but it must never choose between two different stations by directory enumeration order.
 fn valid_station_save_hash(root: &Path) -> Option<String> {
     for name in ["agent.save.json", "agent.save.json.bak"] {
@@ -808,7 +807,7 @@ fn workspace_has_content(current: &Path) -> bool {
 /// One-time import of data from legacy workspace roots into the live one. THIS RUNS ONCE, EVER.
 ///
 /// Bug it fixes (audit 0.1): running unconditionally every boot means `copy_missing_dir` re-copies
-/// any file present in a stale legacy root (e.g. %LOCALAPPDATA%\StarNet\workspaces) but absent in
+/// any file present in a stale legacy root (e.g. %LOCALAPPDATA%\AlphaVerse\workspaces) but absent in
 /// the live root — so agents/prospects/sessions the user DELETED silently reappear on the next
 /// launch. Guard rails, checked before any copy:
 ///   1. If the `.migrated` marker exists in the live root, skip entirely (the definitive signal).
@@ -1960,7 +1959,7 @@ fn sidecar_command(state: &AppState, entry: &Path, node: &Path) -> Command {
             set_sidecar_branded_env(&mut cmd, "SKYNET_TELEGRAM_BOT_TOKENS", encoded);
         }
     }
-    // StarNet Cloud device token, same path. Because EVERY sidecar spawn goes through this builder,
+    // AlphaVerse Cloud device token, same path. Because EVERY sidecar spawn goes through this builder,
     // a sidecar restarted after adoption still comes up linked even though the token is no longer
     // in credits.json — the file keeps the non-secret fields and this supplies the secret.
     if let Some(token) = read_credits_token() {
@@ -2058,15 +2057,15 @@ fn show_startup_failure_dialog(_app: &AppHandle, startup_log: &Option<PathBuf>) 
         None => "No startup log path was available.".to_string(),
     };
     let body = format!(
-        "StarNet could not start its local engine.\n\n\
+        "AlphaVerse could not start its local engine.\n\n\
          The engine exited or did not become ready. Possible causes include unavailable workspace \
          files, a blocked Node runtime, or a port that could not be opened.\n\n\
          {log_line}\n\n\
-         Click Retry to try starting the engine again, or Cancel to close StarNet."
+         Click Retry to try starting the engine again, or Cancel to close AlphaVerse."
     );
     let to_wide = |s: &str| -> Vec<u16> { s.encode_utf16().chain(std::iter::once(0)).collect() };
     let text = to_wide(&body);
-    let caption = to_wide("StarNet — startup failed");
+    let caption = to_wide("AlphaVerse — startup failed");
     // SYSTEMMODAL + SETFOREGROUND so the box is seen even though the main window isn't up yet.
     let result = unsafe {
         MessageBoxW(
@@ -2091,9 +2090,9 @@ fn show_startup_failure_dialog(app: &AppHandle, startup_log: &Option<PathBuf>) -
     eprintln!("[starnet] startup failed: sidecar did not come up (see startup.log)");
     show_nonblocking_startup_notice(
         app,
-        "StarNet — local engine not ready",
+        "AlphaVerse — local engine not ready",
         format!(
-            "StarNet could not start its local engine yet. It will keep retrying in the background, \
+            "AlphaVerse could not start its local engine yet. It will keep retrying in the background, \
              but the station may stay unreachable until it does.\n\n{}",
             startup_log_line(startup_log)
         ),
@@ -2146,8 +2145,8 @@ fn report_window_startup_failure(
             .unwrap_or_else(|| "unavailable".into());
         show_nonblocking_startup_notice(
             app,
-            "StarNet — window startup",
-            format!("StarNet's window could not finish starting.\n\n{detail}\n\nQuit StarNet and reopen it. If this persists, include startup.log in your bug report:\n{path}"),
+            "AlphaVerse — window startup",
+            format!("AlphaVerse's window could not finish starting.\n\n{detail}\n\nQuit AlphaVerse and reopen it. If this persists, include startup.log in your bug report:\n{path}"),
             on_dismiss,
         );
     }
@@ -2160,9 +2159,9 @@ fn report_window_startup_failure(
             .as_ref()
             .map(|p| p.display().to_string())
             .unwrap_or_else(|| "unavailable".into());
-        let text: Vec<u16> = format!("StarNet's window could not finish starting.\n\n{detail}\n\nQuit StarNet from its tray icon and reopen it. If this persists, include startup.log in your bug report:\n{path}")
+        let text: Vec<u16> = format!("AlphaVerse's window could not finish starting.\n\n{detail}\n\nQuit AlphaVerse from its tray icon and reopen it. If this persists, include startup.log in your bug report:\n{path}")
             .encode_utf16().chain(std::iter::once(0)).collect();
-        let title: Vec<u16> = "StarNet — window startup"
+        let title: Vec<u16> = "AlphaVerse — window startup"
             .encode_utf16()
             .chain(std::iter::once(0))
             .collect();
@@ -2351,7 +2350,7 @@ fn spawn_guardian(app: AppHandle) {
                             count = count.saturating_add(1);
                             if count >= GUARDIAN_MAX_CONSECUTIVE_CRASHES {
                                 let reason = format!(
-                                    "crash-loop: the station service exited {count} times in {} minutes (last exit code {code:?}); the guardian stopped restarting it. Use RESTART STATION SERVICE to try again, or quit StarNet fully and reopen it.",
+                                    "crash-loop: the station service exited {count} times in {} minutes (last exit code {code:?}); the guardian stopped restarting it. Use RESTART STATION SERVICE to try again, or quit AlphaVerse fully and reopen it.",
                                     GUARDIAN_CRASH_WINDOW.as_secs() / 60
                                 );
                                 log_startup(
@@ -2683,7 +2682,7 @@ fn parse_lifecycle_response(text: &str) -> Option<LifecycleArmed> {
 }
 
 /// Blocking poll of GET /api/lifecycle/armed, classified per LifecycleProbe. Uses the per-launch API token as
-/// the X-StarNet-Token header (the same gate the frontend fetches use); no Origin header (absent Origin is
+/// the X-AlphaVerse-Token header (the same gate the frontend fetches use); no Origin header (absent Origin is
 /// allowed for loopback callers).
 fn probe_lifecycle_armed(port: u16, api_token: &str, timeout: Duration) -> LifecycleProbe {
     use std::io::{Read, Write};
@@ -2693,7 +2692,7 @@ fn probe_lifecycle_armed(port: u16, api_token: &str, timeout: Duration) -> Lifec
     let _ = stream.set_read_timeout(Some(timeout));
     let _ = stream.set_write_timeout(Some(timeout));
     let head = format!(
-        "GET /api/lifecycle/armed HTTP/1.1\r\nHost: 127.0.0.1\r\nX-StarNet-Token: {api_token}\r\nConnection: close\r\n\r\n"
+        "GET /api/lifecycle/armed HTTP/1.1\r\nHost: 127.0.0.1\r\nX-AlphaVerse-Token: {api_token}\r\nConnection: close\r\n\r\n"
     );
     if stream.write_all(head.as_bytes()).is_err() || stream.flush().is_err() {
         return LifecycleProbe::Ambiguous; // connected, then failed — alive but unwell
@@ -2723,7 +2722,7 @@ fn post_sidecar_halt(state: &AppState, timeout: Duration) {
     use std::io::{Read, Write};
     let body = "{}";
     let head = format!(
-        "POST /api/halt HTTP/1.1\r\nHost: 127.0.0.1\r\nX-StarNet-Token: {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        "POST /api/halt HTTP/1.1\r\nHost: 127.0.0.1\r\nX-AlphaVerse-Token: {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
         state.api_token,
         body.len()
     );
@@ -2746,7 +2745,7 @@ fn post_sidecar_quit(state: &AppState, timeout: Duration) {
     use std::io::{Read, Write};
     let body = "{}";
     let head = format!(
-        "POST /api/lifecycle/quit HTTP/1.1\r\nHost: 127.0.0.1\r\nX-StarNet-Token: {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        "POST /api/lifecycle/quit HTTP/1.1\r\nHost: 127.0.0.1\r\nX-AlphaVerse-Token: {}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
         state.api_token,
         body.len()
     );
@@ -2869,7 +2868,7 @@ fn build_main_window(
         // Let HTML5 file drops reach COMMS and the existing attachment uploader.
         // Tauri's native handler otherwise intercepts them on Windows.
         .disable_drag_drop_handler()
-        .title("StarNet")
+        .title("AlphaVerse")
         .inner_size(1280.0, 832.0)
         .min_inner_size(960.0, 600.0)
         .initialization_script(&init)
@@ -3119,7 +3118,7 @@ fn on_webview_process_failed(
     if !state.webview_recovery.try_spend(Instant::now()) {
         log_startup(
             &log,
-            format!("webview-recovery: {name}; recovery budget spent (3 in 10 min), leaving the window as-is; restart StarNet to recover"),
+            format!("webview-recovery: {name}; recovery budget spent (3 in 10 min), leaving the window as-is; restart AlphaVerse to recover"),
         );
         return;
     }
@@ -3324,7 +3323,7 @@ fn update_lifecycle_preferences(
 /// a multi-second drain there would freeze the app (review m1).
 fn on_tray_menu(app: &AppHandle, id: &str) {
     match id {
-        // Open StarNet means the full station: a HUD that is up hands the window back first.
+        // Open AlphaVerse means the full station: a HUD that is up hands the window back first.
         "lifecycle_open" => {
             hud_mode::request(app, false);
             show_main_window(app);
@@ -3379,26 +3378,26 @@ fn spawn_tray_updater(app: AppHandle) {
                         l.reasons.join(", ")
                     };
                     (
-                        format!("StarNet — {summary}"),
+                        format!("AlphaVerse — {summary}"),
                         format!("Background: {summary}"),
                     )
                 }
                 LifecycleProbe::Armed(_) if close_to_tray => (
-                    "StarNet — idle in tray".to_string(),
-                    "Background: idle — close keeps StarNet running".to_string(),
+                    "AlphaVerse — idle in tray".to_string(),
+                    "Background: idle — close keeps AlphaVerse running".to_string(),
                 ),
                 LifecycleProbe::NotRunning if close_to_tray => (
-                    "StarNet — engine offline (kept in tray)".to_string(),
-                    "Background: engine offline — close keeps StarNet running".to_string(),
+                    "AlphaVerse — engine offline (kept in tray)".to_string(),
+                    "Background: engine offline — close keeps AlphaVerse running".to_string(),
                 ),
                 LifecycleProbe::Armed(_) | LifecycleProbe::NotRunning => (
                     // Nothing armed (or no engine at all): closing quits — the same rule the close path applies.
-                    "StarNet — idle (closing quits)".to_string(),
+                    "AlphaVerse — idle (closing quits)".to_string(),
                     "Background: idle — closing quits".to_string(),
                 ),
                 LifecycleProbe::Ambiguous => (
                     // Alive but the poll failed — honest "unknown", mirroring the close path's fail-open.
-                    "StarNet — status unavailable (close keeps it running)".to_string(),
+                    "AlphaVerse — status unavailable (close keeps it running)".to_string(),
                     "Background: status unavailable — close keeps it running".to_string(),
                 ),
             };
@@ -3859,7 +3858,7 @@ async fn starnet_open_artifact(
         "Open this file with its system default app?\n\n{}",
         artifact.display()
     );
-    if !confirm_host_launch(&app, "StarNet — open file", &body, "Open") {
+    if !confirm_host_launch(&app, "AlphaVerse — open file", &body, "Open") {
         return Err(format!("open {HOST_GESTURE_DECLINED}"));
     }
 
@@ -3907,7 +3906,7 @@ async fn starnet_reveal_path(
         },
         artifact.display()
     );
-    if !confirm_host_launch(&app, "StarNet — reveal in folder", &body, "Reveal") {
+    if !confirm_host_launch(&app, "AlphaVerse — reveal in folder", &body, "Reveal") {
         return Err(format!("reveal {HOST_GESTURE_DECLINED}"));
     }
 
@@ -4212,7 +4211,7 @@ fn open_external_url(state: State<AppState>, url: String) -> Result<(), String> 
 /// exit restores it.
 static FS_RESTORE_MAXIMIZE: AtomicBool = AtomicBool::new(false);
 
-/// Toggle the main StarNet desktop window between windowed and fullscreen mode.
+/// Toggle the main AlphaVerse desktop window between windowed and fullscreen mode.
 #[tauri::command]
 fn starnet_toggle_fullscreen(app: AppHandle) -> Result<bool, String> {
     // HUD mode owns the window as a pinned corner panel; F11 there would blow the HUD up over the
@@ -4238,7 +4237,7 @@ fn starnet_toggle_fullscreen(app: AppHandle) -> Result<bool, String> {
     Ok(next)
 }
 
-/// Prevent idle system sleep while StarNet is open. This does not force the
+/// Prevent idle system sleep while AlphaVerse is open. This does not force the
 /// display to stay on; it only keeps scheduled tasks from being paused by OS sleep.
 #[tauri::command]
 fn starnet_set_keep_awake(
@@ -4541,7 +4540,7 @@ struct LifecycleView {
 fn starnet_restart_sidecar(state: State<AppState>) -> Result<bool, String> {
     let st: &AppState = state.inner();
     if st.shutting_down.load(Ordering::SeqCst) {
-        return Err("StarNet is shutting down".to_string());
+        return Err("AlphaVerse is shutting down".to_string());
     }
     let _recovery = begin_recovery(st)?;
     log_startup(
@@ -4600,7 +4599,7 @@ fn starnet_start_fresh(
 ) -> Result<FreshStartView, String> {
     let st: &AppState = state.inner();
     if st.shutting_down.load(Ordering::SeqCst) {
-        return Err("StarNet is shutting down".to_string());
+        return Err("AlphaVerse is shutting down".to_string());
     }
     let _recovery = begin_recovery(st)?;
     log_startup(
@@ -4633,10 +4632,10 @@ fn starnet_start_fresh(
         }
     };
 
-    // The reset deliberately preserves only the protected StarNet credit-account link record.
+    // The reset deliberately preserves only the protected AlphaVerse credit-account link record.
     // Adopt a transient plaintext token into the OS keychain before the new sidecar starts, matching boot.
     migrate_credits_token_from_plaintext(&st.workspaces);
-    // The packaged origin belongs only to StarNet. Clearing it natively removes localStorage,
+    // The packaged origin belongs only to AlphaVerse. Clearing it natively removes localStorage,
     // IndexedDB, cookies, service workers and caches on both WebView2 and WKWebView. JS repeats the
     // namespaced localStorage clear as a fallback, and will refuse to reload if neither layer proves it.
     let browser_data_cleared = match window.clear_all_browsing_data() {
@@ -4695,12 +4694,12 @@ fn local_voice_model_cache() -> Option<PathBuf> {
     if cfg!(windows) {
         std::env::var_os("LOCALAPPDATA")
             .map(PathBuf::from)
-            .map(|base| base.join("StarNet").join("models"))
+            .map(|base| base.join("AlphaVerse").join("models"))
     } else if cfg!(target_os = "macos") {
         std::env::var_os("HOME").map(PathBuf::from).map(|home| {
             home.join("Library")
                 .join("Application Support")
-                .join("StarNet")
+                .join("AlphaVerse")
                 .join("models")
         })
     } else {
@@ -4714,7 +4713,7 @@ fn local_voice_model_cache() -> Option<PathBuf> {
 /// #65 ERASE EVERYTHING (Settings > APP & BACKUP). The full "start over from scratch": stop every run and the
 /// sidecar (its graceful quit closes the station browser and reaps its children), swap in a sealed empty station
 /// (fresh_start::set_aside_for_erase; a failed move changes NOTHING), then DELETE the old station, every other entry
-/// of the app-data folder, older StarNet data roots and the voice-model cache (erase_all.rs: StarNet-owned paths
+/// of the app-data folder, older AlphaVerse data roots and the voice-model cache (erase_all.rs: AlphaVerse-owned paths
 /// only, links never followed), remove every keychain credential this shell can have created, turn launch-at-login
 /// off, clear the WebView's own storage, and start a clean sidecar. The receipt lists what was removed and what
 /// could not be, so the UI never claims an erase that did not happen. Project folders the user trusted are
@@ -4731,7 +4730,7 @@ fn starnet_erase_everything(
     }
     let st: &AppState = state.inner();
     if st.shutting_down.load(Ordering::SeqCst) {
-        return Err("StarNet is shutting down - nothing was erased".to_string());
+        return Err("AlphaVerse is shutting down - nothing was erased".to_string());
     }
     let _recovery = begin_recovery(st)?;
     log_startup(
@@ -4770,7 +4769,7 @@ fn starnet_erase_everything(
                 format!("erase: refused before any deletion ({error}); station respawn listening={listening}"),
             );
             return Err(format!(
-                "nothing was erased - {error}. Close any other StarNet window or browser and try again."
+                "nothing was erased - {error}. Close any other AlphaVerse window or browser and try again."
             ));
         }
     };
@@ -4946,7 +4945,7 @@ fn main() {
                 let _ = win.set_focus();
             } else if action == webview_recovery::SecondLaunch::Wait {
                 // Starting up (a slow boot under memory pressure) or rebuilding after a WebView2
-                // crash: NOT a zombie. Quitting here killed a still-booting StarNet on 2026-09-23.
+                // crash: NOT a zombie. Quitting here killed a still-booting AlphaVerse on 2026-09-23.
                 log_startup(
                     &startup_log_path(app),
                     "second-launch: main window not built yet (starting or rebuilding); leaving this instance running",
@@ -5104,7 +5103,7 @@ fn main() {
             // the E-STOP (reaches background work even with the window closed); Quit drains + kills the sidecar
             // and exits. Built here so it exists before the window, so a close-to-tray has somewhere to live.
             {
-                let open_item = MenuItem::with_id(app, "lifecycle_open", "Open StarNet", true, None::<&str>)?;
+                let open_item = MenuItem::with_id(app, "lifecycle_open", "Open AlphaVerse", true, None::<&str>)?;
                 let hud_item = MenuItem::with_id(app, "lifecycle_hud", "HUD Mode", true, None::<&str>)?;
                 let status_item = MenuItem::with_id(
                     app,
@@ -5116,11 +5115,11 @@ fn main() {
                     None::<&str>,
                 )?;
                 let pause_item = MenuItem::with_id(app, "lifecycle_pause", "Pause Automation (E-STOP)", true, None::<&str>)?;
-                let quit_item = MenuItem::with_id(app, "lifecycle_quit", "Quit StarNet", true, None::<&str>)?;
+                let quit_item = MenuItem::with_id(app, "lifecycle_quit", "Quit AlphaVerse", true, None::<&str>)?;
                 let sep = PredefinedMenuItem::separator(app)?;
                 let menu = Menu::with_items(app, &[&open_item, &hud_item, &status_item, &sep, &pause_item, &quit_item])?;
                 let mut tray_builder = TrayIconBuilder::with_id("starnet-tray")
-                    .tooltip("StarNet")
+                    .tooltip("AlphaVerse")
                     .menu(&menu)
                     .show_menu_on_left_click(false)
                     .on_menu_event(|app, event| on_tray_menu(app, event.id.as_ref()))
@@ -5198,7 +5197,7 @@ fn main() {
             Ok(())
         })
         .build(context)
-        .expect("failed to build the StarNet desktop shell")
+        .expect("failed to build the AlphaVerse desktop shell")
         .run(|app, event| {
             if let RunEvent::ExitRequested { api, code, .. } = event {
                 // WebView2 crash recovery destroys the dead main window before building its
@@ -5284,7 +5283,7 @@ mod sidecar_reap_tests {
     #[test]
     fn bundled_absolute_path_is_reapable() {
         assert!(is_reapable_node_path(Path::new(
-            r"C:\Program Files\StarNet\node.exe"
+            r"C:\Program Files\AlphaVerse\node.exe"
         )));
     }
 
@@ -5356,12 +5355,12 @@ mod sidecar_reap_tests {
         // QueryFullProcessImageNameW may report different casing than our resolved path;
         // same_path must still match — while a DIFFERENT node install must not.
         assert!(same_path(
-            Path::new(r"C:\PROGRAM FILES\StarNet\NODE.EXE"),
-            Path::new(r"C:\Program Files\StarNet\node.exe"),
+            Path::new(r"C:\PROGRAM FILES\AlphaVerse\NODE.EXE"),
+            Path::new(r"C:\Program Files\AlphaVerse\node.exe"),
         ));
         assert!(!same_path(
             Path::new(r"C:\Program Files\nodejs\node.exe"),
-            Path::new(r"C:\Program Files\StarNet\node.exe"),
+            Path::new(r"C:\Program Files\AlphaVerse\node.exe"),
         ));
     }
 }

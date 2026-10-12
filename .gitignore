@@ -216,3 +216,12 @@ sidecar/mcp/google-client.json
 src-tauri/frontend-embed/
 # user-study-loop live proof scratch (seeded workspace + chrome profile). Never committed.
 dev/.scratch-workspace-usl-proof/
+
+# AlphaVerse: local validation/build artifacts and private configuration
+.env
+.env.*
+!.env.example
+alphaverse-workspaces/
+coverage/
+website-deploy/
+*.tsbuildinfo

@@ -1,177 +1,67 @@
-<div align="center">
+# AlphaVerse
 
-<img src=".github/media/starnet-logo-glow.png" alt="StarNet" width="560">
+**AlphaVerse** is a local-first, multi-agent AI orchestration platform for coordinating autonomous agents, tools, projects, and workflows.
 
-**A living pixel-art station where real AI agents do real work.**
+> **Development fork — not an official StarNet distribution.** AlphaVerse started from the publicly available MIT-licensed source code of [StarNet](https://github.com/androoAGI/starnet), upstream tag `v0.13.2` (commit `54899e5ff3f2b002b457757916b3977818db6fc1`). This fork is independently maintained and is not affiliated with, endorsed by, or supported by the upstream author.
 
-[![Download](https://img.shields.io/github/v/release/androoAGI/starnet-releases?label=download&color=f5a623)](https://github.com/androoAGI/starnet-releases/releases/latest)
-[![Platforms](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-4a90d9)](INSTALL.md)
-[![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f)](LICENSE)
-[![Local-first](https://img.shields.io/badge/local--first-your%20machine%2C%20your%20data-8250df)](PRIVACY.md)
+## Status
 
-[Download](https://github.com/androoAGI/starnet-releases/releases/latest) ·
-[Install guide](INSTALL.md) ·
-[Run from source](#run-from-source) ·
-[Docs](docs/INDEX.md) ·
-[Contributing](CONTRIBUTING.md)
+This repository is being rebranded and separated from the upstream product. The **software code** remains MIT-licensed, but the upstream author retains the rights to their *StarNet* name, logo, sprites, station artwork, and other branding. Some **upstream visual assets are still present as temporary development placeholders** and must be replaced or independently licensed before redistributing a branded app. Do not assume those assets are covered by the MIT code license.
 
-<img src=".github/media/station-iso.png" alt="The StarNet station — rooms, crew, and workstations rendered from live harness state" width="540">
-
-</div>
-
-StarNet is a local-first desktop harness where you create AI agents, organize them into a
-pixel-art space station, and watch them perform real work with real models and tools. The
-station is not decoration — it is a projection of live runtime state, and the product contract
-is literal: **A room is a capability-scoped team**, **a hallway is** an authorized handoff
-lane, and **a placed object is a real capability grant**.
-The layout you draw *is* the workflow the agents run.
-
-Start with one agent, then place bays or summon specialists to run **more, concurrently** —
-each a **genuinely distinct, bounded agent run** with its own workspace and permissions.
-The harness performs **real model calls, real tools, real cost** rather than animating a
-simulation.
-
-## Features
-
-| | |
-| --- | --- |
-| **A crew, not a chatbot** | Create agents with distinct classes, personas, and loadouts. Run several at once — each gets its own workspace, transcript, memory, and bounded permissions. |
-| **Bring your own models** | Paste an OpenRouter key, or sign in with supported provider accounts (Anthropic, OpenAI, Google) — keys live in the OS keychain, never in the frontend. |
-| **Message it from anywhere** | Wire agents to Telegram, Discord, Slack, Signal, or Matrix and talk to your station away from the desk. |
-| **Night Shift** | Leave the station running and agents keep working inside an explicit, adjustable leash — every away-action is logged and reviewable. |
-| **Recipes, skills, schedules** | Launch proven multi-step recipes, grant reusable skills, and put work on cron schedules with visible output. |
-| **Asks before it guesses** | Task Briefs turn ambiguity into one concrete question with options — over any connected channel — instead of a silent wrong guess. |
-| **Finished work has a front door** | Deliverables land in the OUTBOX as real files you open, not chat scrollback you archaeology. |
-| **MCP connectors** | Attach Model Context Protocol servers and paste-a-key/OAuth connectors to extend what agents can touch. |
-| **Voice** | Push-to-talk dictation in, one consistent station voice out. |
-| **Real ledgers** | Spend, budgets, and run history persist on disk and are shown as-is. |
-
-## What is real
-
-- Model calls stream through the local Node sidecar.
-- Tools operate through explicit capability and consent checks.
-- Agent memory, transcripts, spend records, tasks, and schedules persist on disk.
-- Multiple agents run concurrently with separate workspaces and bounded permissions.
-- The visual station projects the same runtime state the harness can prove.
-
-StarNet does not simulate revenue, completed work, model activity, or spend. Its core product
-law is that **the interface must never assert state the harness cannot prove.**
-
-## Download
-
-Desktop builds are published on the
-[StarNet releases page](https://github.com/androoAGI/starnet-releases/releases/latest).
-
-| Platform | Asset |
-| --- | --- |
-| **Windows** (10/11, 64-bit) | `StarNet_<version>_x64-setup.exe` |
-| **macOS — Apple Silicon** (M1 or later) | `StarNet_<version>_aarch64.dmg` |
-| **macOS — Intel** | `StarNet_<version>_x64.dmg` |
-
-> **Apple Silicon note:** use the native `aarch64` DMG. Avoid the `x64` DMG on Apple Silicon:
-> it runs under Rosetta 2 rather than using the native architecture.
-
-The public release train supports Windows and macOS. It refuses to stage a release unless the
-Windows installer passes Authenticode and timestamp verification, both Mac builds pass
-Developer ID checks and Apple notarization, and every updater artifact has a valid updater
-signature. Those are pipeline requirements, not proof that a particular downloaded or installed
-copy was tested on your machine; [INSTALL.md](INSTALL.md) explains what to verify and when to stop.
-Linux packages are internal build artifacts only and are not a supported public release target.
-
-> **Early release:** Windows is the most-tested desktop target. macOS has less real-world
-> coverage. Broken? Tell us:
-> **androo.agi@gmail.com**.
+**No official AlphaVerse binary release or auto-updater is published.** The upstream release automation has been removed/disabled and the upstream updater endpoint has been detached. Never install a StarNet installer and present it as AlphaVerse. The inherited hosted billing and remote services are not AlphaVerse services; do not configure them as such. Begin with your own model-provider key or local Ollama.
 
 ## Run from source
 
-Requirements: Node.js 18+ (Node.js 22 matches CI), Git. Rust and the
-[Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) only for the desktop shell.
-
-The sidecar uses Node core modules only, so it runs without installing anything:
+Prerequisites: Git and Node.js 18 or newer (Node.js 22 is used by the upstream CI). Rust and the [Tauri v2 prerequisites](https://v2.tauri.app/start/prerequisites/) are needed only for the desktop shell.
 
 ```bash
-git clone https://github.com/androoAGI/starnet.git
-cd starnet
-node sidecar/index.js
+git clone https://github.com/artfied/AlphaVerse.git
+cd AlphaVerse
+npm ci
+npm start
 ```
 
-Open <http://localhost:8787>, then connect a provider —
-**bring your own OpenRouter API key (BYOK)** or use a supported OAuth sign-in. Provider requests leave your machine when you run an agent;
-station state, transcripts, memory, and ledgers stay in the local StarNet workspace unless you
-explicitly use a network tool or connector. See [PRIVACY.md](PRIVACY.md) for the full data map.
+Open [http://localhost:8787](http://localhost:8787) and configure an API provider or a local Ollama instance.
 
-### Run free with a local model
-
-No key, no account, no bill: install [Ollama](https://ollama.com), pull a model
-(`ollama pull qwen3:8b`), and pick **OLLAMA** as the provider — on the first-run brain screen, or
-later in **SETTINGS → PROVIDERS**. StarNet talks to Ollama on `127.0.0.1:11434` and only reports
-it ready once it can list your local models. Pick a model that supports tools (`ollama show <model>`
-lists them): agents act through tool calls. Honest caveat: local models are smaller than the
-cloud ones, so expect slower and rougher work on long tasks, and a task needs a large context
-window — an 8B model takes about 10 GB of graphics memory while it works.
-
-For desktop development:
+### Desktop development
 
 ```bash
 npm ci
-npm run desktop:dev     # dev shell
-npm run desktop:build   # build installers locally
+npm run desktop:dev
 ```
 
-## Coming from OpenClaw or Hermes?
+To build a local desktop package:
 
-StarNet can import an existing agent: point it at your on-disk OpenClaw or Hermes home and it
-mints a StarNet agent from the persona, instructions, memory, and model it finds. API keys
-never transfer — you re-enter those in the KEYS tab.
+```bash
+npm run desktop:build
+```
+
+The desktop build has **not yet been verified on Windows/macOS for AlphaVerse**. Read [INSTALL.md](INSTALL.md) and review the open rebranding tasks before distributing binaries.
+
+### Tests
+
+```bash
+npm run verify:alphaverse
+npm run test:fast
+npm run test:http
+npm test
+```
+
+The original project has extensive tests, but successful upstream CI does not automatically validate changes made in this fork.
 
 ## Architecture
 
-| Path | Responsibility |
-| --- | --- |
-| `frontend/` | Vanilla JavaScript station world and desktop UI. |
-| `sidecar/` | Local Node agent runtime: providers, tools, persistence, budgets, consent. |
-| `shared/` | Additive cross-boundary event and schema contracts. |
-| `src-tauri/` | Rust/Tauri desktop shell and bundled runtime. |
-| `test/` | Unit, contract, integration, and release gates. |
-| `qa/` | Live QA receipts, journeys, findings ledger, and release-readiness authority. |
+- `frontend/` — station UI and client-side interface.
+- `sidecar/` — local Node.js agent runtime and APIs.
+- `shared/` — shared contracts.
+- `src-tauri/` — native desktop shell (Rust/Tauri).
+- `test/` and `qa/` — automated verification and evidence.
+- `website/` — independent website and a generated application preview.
 
-The frontend consumes real sidecar events over localhost HTTP/NDJSON and SSE. Secrets belong
-to the local authority:
-**Secrets are held by the sidecar / OS keychain, never in the frontend**.
+## Attribution and licensing
 
-Start with [docs/INDEX.md](docs/INDEX.md) for the living documentation. Older planning
-documents remain in the repository as design history and are labeled accordingly.
+The source is based on **StarNet**, copyright © 2026 Andrew Sims and other relevant contributors, licensed under the MIT License. See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md) for original notices and third-party obligations. *AlphaVerse* is a separate fork. Do not remove upstream copyright notices or third-party attributions.
 
-## Testing
+**Security note:** AI agents can run commands, access files and connect to external services when you grant permissions. Start with least privilege, review tool permissions, and avoid using sensitive directories during development. Report security problems privately rather than posting secrets in public issues.
 
-```bash
-npm run test:fast          # required merge gate
-npm run test:http          # live sidecar HTTP/E2E suite
-npm test                   # validation + world + fast + HTTP suites
-npm run security:secrets   # full-history secret scan; requires Gitleaks in PATH
-```
-
-The release aggregate is `npm run qa:ready`. It is candidate-bound: any new commit invalidates
-the prior READY receipt until the affected live gates are rerun.
-
-## Contributing and security
-
-Contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) and follow the
-[Code of Conduct](CODE_OF_CONDUCT.md).
-
-Do not report vulnerabilities in a public issue. Follow [SECURITY.md](SECURITY.md) for private
-reporting instructions.
-
-## License
-
-StarNet is open source under the [MIT License](LICENSE). Third-party components remain
-under their original licenses — see [NOTICE.md](NOTICE.md).
-
-**The MIT License covers the code only.** The **StarNet** name, the logo, the station artwork
-and sprites, and the rest of the project's brand identity are owned by Andrew Sims and are
-**not** licensed with it — no trademark or other brand rights are granted, expressly or by
-implication.
-
-MIT means you may fork, modify, and redistribute the code, including commercially. What you
-may not do is ship it as StarNet: forks and derivatives must use their own name, logo, and
-artwork, and must not present themselves as this project or as endorsed by it.
+For project-specific bugs and development, use [AlphaVerse Issues](https://github.com/artfied/AlphaVerse/issues).

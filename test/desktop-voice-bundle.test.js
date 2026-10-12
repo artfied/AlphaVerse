@@ -13,7 +13,7 @@ const infoPlist = read('src-tauri/Info.plist');
 const stage = read('scripts/stage-voice-deps.mjs');
 const buildRs = read('src-tauri/build.rs');
 const desktopCi = read('.github/workflows/desktop-build.yml');
-const releaseCi = read('.github/workflows/release-train.yml');
+// AlphaVerse has no upstream release train; only the independent desktop CI is active.
 const canary = read('scripts/update-canary.mjs');
 const phase5Surface = read('scripts/phase5-surface-proof.mjs');
 
@@ -57,7 +57,7 @@ assert.match(fs.readFileSync(path.join(root, 'src-tauri', tauri.bundle.macOS.ent
   /<key>com\.apple\.security\.device\.audio-input<\/key>\s*<true\s*\/>/,
   'signed macOS builds authorize microphone input under hardened runtime');
 
-for (const [name, source] of [['desktop CI', desktopCi], ['release CI', releaseCi]]) {
+for (const [name, source] of [['AlphaVerse desktop CI', desktopCi]]) {
   assert.match(
     source,
     /prepare-node\.mjs \$\{\{ matrix\.target \}\}[\s\S]{0,160}stage-voice-deps\.mjs --target \$\{\{ matrix\.target \}\}/,

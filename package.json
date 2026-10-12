@@ -1,17 +1,17 @@
 {
-  "name": "starnet-harness",
+  "name": "alphaverse-harness",
   "version": "0.13.2",
   "private": true,
-  "description": "A local-first, gamified desktop harness for building and running real AI-agent teams.",
+  "description": "AlphaVerse — a local-first AI multi-agent orchestration environment, derived from StarNet.",
   "license": "MIT",
   "author": "Andrew Sims",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/androoAGI/starnet.git"
+    "url": "git+https://github.com/artfied/AlphaVerse.git"
   },
-  "homepage": "https://github.com/androoAGI/starnet#readme",
+  "homepage": "https://github.com/artfied/AlphaVerse#readme",
   "bugs": {
-    "url": "https://github.com/androoAGI/starnet/issues"
+    "url": "https://github.com/artfied/AlphaVerse/issues"
   },
   "keywords": [
     "ai-agents",
@@ -23,7 +23,7 @@
     "node": ">=18"
   },
   "bin": {
-    "starnet": "bin/starnet.js"
+    "alphaverse": "bin/alphaverse.js"
   },
   "scripts": {
     "validate:raw": "node test/validate_map.js",
@@ -34,11 +34,11 @@
     "test": "npm run test:fast && npm run test:http",
     "website:stage": "node scripts/stage-website-deploy.mjs",
     "website:stage:check": "node scripts/stage-website-deploy.mjs --check",
-    "start": "node sidecar/index.js",
+    "start": "node scripts/alphaverse-start.cjs",
     "mcp:serve": "node sidecar/mcp/serve.js",
     "acp:serve": "node sidecar/acp/serve.js",
-    "app": "node sidecar/index.js",
-    "sidecar": "node sidecar/index.js",
+    "app": "node scripts/alphaverse-start.cjs",
+    "sidecar": "node scripts/alphaverse-start.cjs",
     "dev:seed": "node dev/seed.js",
     "dev:seed:keep": "node dev/seed.js --keep",
     "shoot": "node scripts/shoot.mjs",
@@ -161,7 +161,8 @@
     "release:canary": "node scripts/update-canary.mjs",
     "release:promotion-gate": "node scripts/release-promotion-gate.mjs",
     "security:secrets": "node scripts/scan-history-secrets.mjs",
-    "eval:skills": "node scripts/eval/skills.mjs"
+    "eval:skills": "node scripts/eval/skills.mjs",
+    "verify:alphaverse": "node scripts/verify-alphaverse-boundaries.cjs"
   },
   "devDependencies": {
     "@napi-rs/canvas": "0.1.100",
