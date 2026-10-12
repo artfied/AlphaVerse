@@ -156,7 +156,7 @@ const F = (err, status, opts) => friendlyError(err, status, opts);
   A.eq(v.kind, 'server_error', '5xx -> server_error');
   A.eq(v.retryable, true, 'server_error retryable');
   A.eq(v.action, null, 'server_error has no deep-link action');
-  A.ok(/local StarNet service hit an error/i.test(v.userMessage), 'server_error leads with the friendly headline');
+  A.ok(/local AlphaVerse service hit an error/i.test(v.userMessage), 'server_error leads with the friendly headline');
   A.ok(/sidecar HTTP 500/.test(v.raw), 'raw technical text preserved for the dim sub-line');
   // 2026-07-30: this line used to assert the DEFECT (a bare 503 -> the "local StarNet service" copy). A 503
   // with no sidecar evidence in the raw is a provider-shaped failure — the local claim owes proof it never has.
@@ -170,24 +170,24 @@ const F = (err, status, opts) => friendlyError(err, status, opts);
   A.eq(F(new Error('Failed to fetch')).kind, 'network', 'browser "Failed to fetch" -> network');
 
   /* THE COPY OWES PROOF (2026-07-29 regression guard). This block previously asserted that ANY transport loss
-     leads with "Can't reach StarNet's local service" — i.e. the test was pinning the defect in place. That
+     leads with "Can't reach AlphaVerse's local service" — i.e. the test was pinning the defect in place. That
      sentence tells the user to restart the app, and it was being shown for an upstream model-stream drop against
      a perfectly healthy sidecar (a real 0.7.0 user report: days lost restarting and reinstalling). The wording
      is now a function of a MEASURED /api/health probe, and the three states must stay distinguishable. */
   v = F(new Error('terminated'), null, { engineAlive: false });
   A.eq(v.kind, 'network', 'proven-dead engine is still the network kind');
   A.eq(v.engineAlive, false, 'measured verdict rides on the verdict object');
-  A.ok(/Can't reach StarNet's local service/i.test(v.userMessage), 'engine proven DOWN earns the restart copy');
+  A.ok(/Can't reach AlphaVerse's local service/i.test(v.userMessage), 'engine proven DOWN earns the restart copy');
 
   v = F(new Error('terminated'), null, { engineAlive: true });
   A.eq(v.kind, 'network', 'proven-alive engine is still the network kind (retryable, no door)');
   A.eq(v.engineAlive, true, 'measured alive verdict preserved');
-  A.ok(!/Can't reach StarNet's local service/i.test(v.userMessage), 'engine proven UP must NOT claim it is unreachable');
+  A.ok(!/Can't reach AlphaVerse's local service/i.test(v.userMessage), 'engine proven UP must NOT claim it is unreachable');
   A.ok(/reply stream/i.test(v.userMessage), 'engine proven UP names the stream instead');
 
   v = F(new Error('terminated'));
   A.eq(v.engineAlive, null, 'no probe -> engineAlive null (unproven, never coerced to false)');
-  A.ok(!/Can't reach StarNet's local service/i.test(v.userMessage), 'unprobed transport loss must not assert the service is unreachable');
+  A.ok(!/Can't reach AlphaVerse's local service/i.test(v.userMessage), 'unprobed transport loss must not assert the service is unreachable');
   A.ok(/connection dropped/i.test(v.userMessage), 'unprobed transport loss states only what was witnessed');
 
   // 429 / rate / quota -> retryable rate_limit
