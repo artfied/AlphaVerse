@@ -318,25 +318,21 @@ const App = (() => {
   }
   function approvalClause(a) {
     const full = a && a.approvalMode === 'full';
-    if (full) return '\n\nAUTHORITY — FULL POWER: the Commander explicitly authorized the whole local computer. Do not pause for approval and do not claim a StarNet policy restriction: use every available tool, arbitrary host commands, host files, visible apps, and screen/input control needed to complete the request. This authority is general, not task-specific. Report only real prerequisites outside StarNet\'s control (for example a missing login, unavailable hardware, an OS elevation prompt, or a disconnected service), and keep trying viable routes before declaring one.';
+    if (full) return '\n\nAUTHORITY — FULL POWER: the Commander explicitly authorized the whole local computer. Do not pause for approval and do not claim a AlphaVerse policy restriction: use every available tool, arbitrary host commands, host files, visible apps, and screen/input control needed to complete the request. This authority is general, not task-specific. Report only real prerequisites outside AlphaVerse\'s control (for example a missing login, unavailable hardware, an OS elevation prompt, or a disconnected service), and keep trying viable routes before declaring one.';
     return '\n\nAPPROVAL — ASK FIRST: actions that write files, run commands, or reach the network need the Commander\'s approval — but you NEVER ask for it in a chat message. The approval system cannot see chat text; typed replies like "I approve" grant nothing. Instead, just make the tool call: the harness pauses it and shows the Commander a real approval prompt with Approve/Deny buttons, and the decision comes back to you automatically. Reasoning over what you already have needs no approval.';
   }
   // an always-appended SYSTEM truth: what the agent ACTUALLY runs on. Mirrors approvalClause — derived fresh each
   // compose, never stored in the editable identity.md (so it can't be edited away and never drifts stale). Fixes the
   // "I'm a <legacy-name> agent" misread: when the agent introspects (env/pwd) it may meet the project's former name
-  // "Skynet" (renamed to StarNet, but some paths/env survive as back-compat aliases) or scattered references to the
+  // Upstream StarNet/Skynet legacy names remain in compatibility paths and APIs; avoid treating them as the product identity.
   // earlier open-source runtimes the harness was built on. Without this grounding it guesses one of those. Truthful-
-  // telemetry law: state only what's true (StarNet harness, Commander's own model), don't guess.
+  // telemetry law: state only what's true (AlphaVerse harness, Commander's own model), don't guess.
   function foundationClause() {
-    return '\n\nYOUR FOUNDATION: You run on the StarNet harness — a local-first agent runtime on the Commander\'s own '
-      + 'machine, not a hosted service. Your reasoning comes from whichever model the Commander has connected through '
-      + 'their own API key or account. As you look around your environment you may meet names that are not you, and '
-      + 'none of them change what you are: StarNet was previously called "Skynet" — it has been renamed, but some file '
-      + 'paths, environment variables, and config keys may still carry the old "Skynet"/"SKYNET_" name as a back-compat '
-      + 'alias; and because the harness was assembled from and built on earlier open-source agent runtimes, some code, '
-      + 'comments, or tool names may reference other projects. You are a StarNet agent on the StarNet harness — not a '
-      + 'Skynet agent, and not whatever those internal references happen to name. Do not guess at your own foundation '
-      + 'from ambiguous signals in the environment; report only what you can actually verify, and say plainly when you are not sure.';
+    return '\n\nYOUR FOUNDATION: You are an AlphaVerse agent running on an independently maintained local-first fork of the StarNet open-source harness. '
+      + 'Your reasoning comes from the model the Commander connected with their own API key or account. '
+      + 'You run on the Commander\'s machine, not on a hosted AlphaVerse service. '
+      + 'Some internal environment variables, file schemas and API names still carry legacy starnet or Skynet compatibility identifiers; '
+      + 'those are technical protocol names, not the identity of this project. Report only what you can verify.';
   }
   // the orchestrator's CREW POSTURE — derived fresh each compose like approvalClause/foundationClause, never
   // stored in the editable identity.md (so it can't be edited away and never freezes stale). States only what
@@ -367,7 +363,7 @@ const App = (() => {
     // live roster truth, so it must land before anything else colours the prompt. '' for non-orchestrators.
     p += rosterClause(a);
     // FOUNDATION sits right after identity (before personality) — a constant system truth that grounds "what you are"
-    // so the agent never mistakes StarNet's internal lineage for being some other agent. Kept out of the docs.
+    // so the agent never mistakes AlphaVerse's internal lineage for being some other agent. Kept out of the docs.
     p += foundationClause();
     // personality sits AFTER identity (keeps the REAL-tools clause) and BEFORE purpose, so it colours the
     // agent's tone without ever displacing capability or the mission. Personas.compose folds the chosen
@@ -2318,7 +2314,7 @@ const App = (() => {
   }
 
   /* ---------- CLAUDE CLI on the genesis screen ----------
-     SIGN IN WITH CLAUDE, as smooth as the ChatGPT/Grok doors without StarNet ever holding the credential: the
+     SIGN IN WITH CLAUDE, as smooth as the ChatGPT/Grok doors without AlphaVerse ever holding the credential: the
      sidecar runs the user's own `claude auth login` (it opens the browser and keeps the token) and this tile only
      paints /api/auth/claude-cli/* truth. States:
        checking · missing (install command + guide; re-checks itself, so installing flips the tile on its own)
@@ -2640,7 +2636,7 @@ const App = (() => {
               if (generation !== _starnetLinkGeneration) return;
               if (p && p.linked) {
                 stopStarnetLinkPoll(); SFX.open();
-                if (progress) progress.textContent = 'StarNet connected.';
+                if (progress) progress.textContent = 'AlphaVerse connected.';
                 codeEl.classList.add('hidden'); openBtn.classList.add('hidden');
                 // desktop: move the fresh token file → OS keychain NOW (Rust reads + moves; the token
                 // never passes through here), then teach Harness the credential exists so
@@ -2853,7 +2849,7 @@ const App = (() => {
       if (b.dataset.prov !== pickedProvider) el('in-model').value = '';
       selectProviderUI(b.dataset.prov);
       window.OverseerSetup?.beginConnection();
-      // The explicit StarNet card click starts account connection; automatic selection never opens a window.
+      // The explicit AlphaVerse card click starts account connection; automatic selection never opens a window.
       if (b.dataset.prov === 'starnet' && !starnetLinked) startStarnetLink();
 
     }; });
@@ -2953,7 +2949,7 @@ const App = (() => {
     SFX.click(); stopCodexPoll();
     const saved = Save.has() ? Save.load() : null;
     if (saved && saved.agent) {
-      // RETRY must re-ask, not re-read. A StarNet station's "configured" flag is read ONCE at boot; when the
+      // RETRY must re-ask, not re-read. A AlphaVerse station's "configured" flag is read ONCE at boot; when the
       // account service was down then (issue #76), retry kept consulting that stale false and bounced straight
       // back to this screen even after the link was healthy again. Re-read the sidecar's live answer first.
       if (savedStationProv(saved) === 'starnet' && Harness.refreshCreditsConfigured) {
@@ -3080,7 +3076,7 @@ const App = (() => {
       const creditState = await refreshStarnetGenesisStatus();
       if (!creditState || !creditState.answered || (creditState.linked && creditState.balanceUsd == null)) {
         msg.className = 'msg bad';
-        msg.textContent = 'StarNet couldn’t confirm your credit balance right now. Your credits are safe — try WAKE again in a moment.';
+        msg.textContent = 'AlphaVerse couldn’t confirm your credit balance right now. Your credits are safe — try WAKE again in a moment.';
         return false;
       }
       if (!creditState.linked) { msg.textContent = 'link your StarNet account first — press CONNECT STARNET ACCOUNT above.'; return false; }
@@ -3163,17 +3159,17 @@ const App = (() => {
           refreshStarnetGenesisStatus();
           return false;
         }
-        // the balance is HELD by this station's own running StarNet runs (friendlyerror's managed_credit_held, audit
+        // the balance is HELD by this station's own running AlphaVerse runs (friendlyerror's managed_credit_held, audit
         // B11): it reads $0 but it was read, so it is neither "no credits" nor "couldn't read" — waiting frees it
         if (/Managed credits are held|balance is held by/i.test(wire.why)) {
-          msg.textContent = 'your StarNet balance is held by runs still working on this station — each refunds what it doesn’t spend. Wait for them to finish, then WAKE again'
+          msg.textContent = 'your AlphaVerse balance is held by runs still working on this station — each refunds what it doesn’t spend. Wait for them to finish, then WAKE again'
             + (pickedProvider === 'starnet' ? ' (or press ＄ ADD CREDITS above).' : ', or use your own provider key.');
           refreshStarnetGenesisStatus();
           return false;
         }
         msg.textContent = /Out of managed credit/i.test(wire.why)
           ? 'your StarNet account has no credits — waking your agent uses credits right away. Press ＄ ADD CREDITS above, then WAKE again.'
-          : 'StarNet couldn’t read your credit balance right now — try WAKE again in a moment, or use your own provider key.';
+          : 'AlphaVerse couldn’t read your credit balance right now — try WAKE again in a moment, or use your own provider key.';
         refreshStarnetGenesisStatus();
         return false;
       }
@@ -5093,7 +5089,7 @@ const App = (() => {
             }
             discovered.innerHTML = rows.map(x => '<button type="button" class="proj-discover-pick" data-path="' + U.esc(x.root) + '"><b>' + U.esc(x.name || x.root) + '</b><span>' + U.esc(x.root) + '</span><em>' + U.esc(x.kind || 'project') + '</em></button>').join('');
             discovered.hidden = false;
-            discovered.querySelectorAll('.proj-discover-pick').forEach(b => { b.onclick = () => { input.value = b.dataset.path || ''; showHint('Candidate selected. ADD grants this folder to StarNet.', false); input.focus(); }; });
+            discovered.querySelectorAll('.proj-discover-pick').forEach(b => { b.onclick = () => { input.value = b.dataset.path || ''; showHint('Candidate selected. ADD grants this folder to AlphaVerse.', false); input.focus(); }; });
             showHint('Found ' + rows.length + ' candidate' + (rows.length === 1 ? '' : 's') + '. Select one, then ADD to grant access.' + (j.truncated ? ' Search stopped at its safety limit.' : ''), false);
           })
           .catch(() => showHint('could not reach the station', true))
@@ -5192,7 +5188,7 @@ const App = (() => {
   }
 
   // FORWARD-VERSION GATE (P0.3). Raised when the save on this machine (or an adopted durable remote) was written
-  // by a NEWER StarNet than this build can read. This is a HARD STOP: it shows the blocking gate screen and
+  // by a NEWER AlphaVerse than this build can read. This is a HARD STOP: it shows the blocking gate screen and
   // returns; NOTHING here calls persist()/Save.write(), so the newer save is never re-stamped or clobbered. The
   // only action re-checks/opens the desktop Update Center when the native updater is present; otherwise it states
   // how to update. gateActive latches so a stray timer/beacon can't route back into a resume/persist path.
@@ -5226,7 +5222,7 @@ const App = (() => {
         msg.textContent = 'the update could not install' + (snap && snap.error ? ' — ' + snap.error : '') + '. Download the full installer instead: reinstalling over the top keeps your station.';
         offerInstaller();
       } else if (runs > 0) msg.textContent = (runs === 1 ? '1 agent is' : runs + ' agents are') + ' still working — installing now would kill ' + (runs === 1 ? 'its run' : 'their runs') + '. Try again when ' + (runs === 1 ? 'it finishes.' : 'they finish.');
-      else if (snap && /^(downloading|installing|restarting)$/.test(String(snap.phase || ''))) msg.textContent = 'installing the update — StarNet restarts on its own when it is done.';
+      else if (snap && /^(downloading|installing|restarting)$/.test(String(snap.phase || ''))) msg.textContent = 'installing the update — AlphaVerse restarts on its own when it is done.';
       else msg.textContent = 'the update did not start — try again in a moment.';
     };
     if (btn) {
@@ -5250,7 +5246,7 @@ const App = (() => {
             else if (msg) msg.textContent = 'this build cannot check for updates — download the latest StarNet from starnetos.com, then reopen.';
           } catch (_) { if (msg) msg.textContent = 'update check failed — try again in a moment.'; }
         } else if (msg) {
-          msg.textContent = 'Update StarNet to the latest version (in the desktop app: Update Center), then reopen.';
+          msg.textContent = 'Update AlphaVerse to the latest version (in the desktop app: Update Center), then reopen.';
         }
       };
     }
@@ -5265,7 +5261,7 @@ const App = (() => {
     gateActive = true;
     try { if (World && World.stop) World.stop(); } catch (_) {}
     const p = el('recovery-quarantine-path');
-    if (p) p.textContent = (rec && rec.quarantinedTo) ? String(rec.quarantinedTo) : 'the StarNet workspaces folder (look for *.save.json.corrupt-*)';
+    if (p) p.textContent = (rec && rec.quarantinedTo) ? String(rec.quarantinedTo) : 'the AlphaVerse workspaces folder (look for *.save.json.corrupt-*)';
     const btn = el('btn-recovery-continue');
     if (btn) {
       btn.onclick = async () => {
@@ -5384,7 +5380,7 @@ const App = (() => {
       let up = false;
       try { up = await Harness.restartEngine(); } catch (_) { up = false; }   // the same single-flight door the LINK DOWN chip uses
       if (up) { setStatus('station service restarted — reconnecting…'); attempt(); }
-      else setStatus('the station service could not be restarted — quit StarNet fully (Cmd+Q / tray → Quit) and open it again. Your save is untouched.');
+      else setStatus('the station service could not be restarted — quit AlphaVerse fully (Cmd+Q / tray → Quit) and open it again. Your save is untouched.');
       restarting = false;
       if (restartBtn) restartBtn.disabled = false;
     };
@@ -5395,7 +5391,7 @@ const App = (() => {
     // START COMPLETELY FRESH — unlike the sidecar-backed lineage action, this must work when NO HTTP
     // route answers. The native shell first moves the entire workspace generation to quarantine, seals
     // the new generation against legacy re-migration, and respawns with the same keychain credentials.
-    // Only after that durable move succeeds does FreshStart clear browser-owned StarNet state. Two clicks.
+    // Only after that durable move succeeds does FreshStart clear browser-owned AlphaVerse state. Two clicks.
     const freshBtn = el('btn-unreachable-fresh');
     if (freshBtn) {
       let armed = false;
@@ -5445,7 +5441,7 @@ const App = (() => {
               setStatus('clean station ready — reopening now. Your account link and purchased credits were kept.' + where);
               try { location.reload(); } catch (_) {}
             } else {
-              setStatus('clean station prepared, but the station service is still blocked. Fully quit StarNet and reopen it. Your account link and purchased credits were kept.' + where);
+              setStatus('clean station prepared, but the station service is still blocked. Fully quit AlphaVerse and reopen it. Your account link and purchased credits were kept.' + where);
             }
           } catch (error) {
             resetting = false;
@@ -5459,7 +5455,7 @@ const App = (() => {
       } else if (!core && typeof FreshStart !== 'undefined' && FreshStart.clearBrowserState) {
         // BROWSER MODE exit — START FRESH scoped to what this window actually owns. This gate only opens when the
         // local cache is ALREADY empty (Save.load() null) and the durable side could not be read, so the only
-        // StarNet state left in this browser is stale bookkeeping (prefs, a dead session token, a dev fault flag);
+        // AlphaVerse state left in this browser is stale bookkeeping (prefs, a dead session token, a dev fault flag);
         // clearing it cannot lose a save. The sidecar's own files are never touched from here — the copy says so.
         // Two clicks, same arm/confirm shape as the desktop path. Honest label: it is NOT the desktop quarantine.
         const LABEL = '✦ START FRESH (CLEAR BROWSER STATE)';
@@ -5471,7 +5467,7 @@ const App = (() => {
           if (!armed) {
             armed = true;
             freshBtn.textContent = '✦ CONFIRM — CLEAR BROWSER STATE';
-            setStatus('this clears only this browser\'s StarNet state (cached settings, any stale session) and reloads. The station service\'s own save files are not touched. Press again to confirm.');
+            setStatus('this clears only this browser\'s AlphaVerse state (cached settings, any stale session) and reloads. The station service\'s own save files are not touched. Press again to confirm.');
             setTimeout(() => { if (armed && !resetting) { armed = false; freshBtn.textContent = LABEL; } }, 12000);
             return;
           }
@@ -5520,17 +5516,17 @@ const App = (() => {
     if (box) {
       const evidenceHtml = rows.slice(0, 8).map(row => {
         const kind = String(row && row.kind || 'prior-state').replace(/-/g, ' ').toUpperCase();
-        const root = String(row && row.root || 'local StarNet storage');
+        const root = String(row && row.root || 'local AlphaVerse storage');
         const examples = Array.isArray(row && row.examples) && row.examples.length ? ' · ' + row.examples.slice(0, 4).join(', ') : '';
         return '<div><b>' + U.esc(kind) + '</b> — <code>' + U.esc(root) + '</code>' + U.esc(examples) + '</div>';
-      }).join('') || '<div><b>PRIOR STATE MARKER</b> — local StarNet storage</div>';
+      }).join('') || '<div><b>PRIOR STATE MARKER</b> — local AlphaVerse storage</div>';
       const candidateHtml = candidates.map(row => {
         const when = row && row.updatedAt ? new Date(row.updatedAt).toLocaleString() : 'time unavailable';
         const size = row && row.bytes ? Math.max(1, Math.ceil(row.bytes / 1024)) + ' KB' : 'size unavailable';
         const on = !!(row && row.id === selected);
         return '<button class="lineage-candidate' + (on ? ' on' : '') + '" data-candidate-id="' + U.esc(row && row.id || '') + '" aria-pressed="' + (on ? 'true' : 'false') + '"' + (row && row.recoverable ? '' : ' disabled') + '>' +
           '<b>' + U.esc(row && row.stationName || 'Prior station') + '</b>' +
-          '<span>' + U.esc(row && row.displayRoot || 'local StarNet storage') + '</span>' +
+          '<span>' + U.esc(row && row.displayRoot || 'local AlphaVerse storage') + '</span>' +
           '<small>' + U.esc(row && row.recoverable ? when + ' · ' + size : row && row.reason || 'unreadable save') + '</small></button>';
       }).join('');
       box.innerHTML = evidenceHtml + (candidateHtml ? '<div class="lineage-candidates" aria-label="Recoverable stations">' + candidateHtml + '</div>' : '');
