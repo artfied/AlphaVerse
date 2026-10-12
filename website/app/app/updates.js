@@ -1,4 +1,4 @@
-/* STARNET updates.js
+/* ALPHAVERSE updates.js
    Desktop Update Center: autonomous check loop + native Tauri updater bridge. */
 'use strict';
 
@@ -10,7 +10,9 @@ const Updates = (() => {
   // ALL user data (workspaces live in Application Support; localStorage/IndexedDB in the WebView
   // store keyed by the unchanged bundle id — both OUTSIDE the app bundle the installer replaces).
   // Kept in sync with tauri.conf.json plugins.updater.endpoints[0] (same repo, /releases/latest).
-  const RELEASES_PAGE = 'https://github.com/androoAGI/starnet-releases/releases/latest';
+  const RELEASES_PAGE = 'https://github.com/artfied/AlphaVerse/releases';
+  // AlphaVerse has no signed release feed yet. Do not invoke the inherited updater.
+  const ALPHAVERSE_UPDATE_FEED = false;
   const CORE = (typeof UpdateCore !== 'undefined') ? UpdateCore : null;
   const TAURI = (typeof window !== 'undefined' && window.__TAURI__ && window.__TAURI__.core) ? window.__TAURI__.core : null;
   const invoke = (cmd, args) => TAURI.invoke(cmd, args || {});
@@ -80,9 +82,10 @@ const Updates = (() => {
   }
 
   async function refreshStatus() {
-    if (!TAURI || !CORE) {
+    if (!TAURI || !CORE || !ALPHAVERSE_UPDATE_FEED) {
       state.desktop = false;
       state.phase = 'unsupported';
+      state.error = 'AlphaVerse has no signed update feed yet. Use the development instructions.';
       emit();
       return snapshot();
     }
@@ -138,7 +141,7 @@ const Updates = (() => {
   }
 
   async function check(manual, reason) {
-    if (!TAURI || !CORE || busy) return snapshot();
+    if (!TAURI || !CORE || !ALPHAVERSE_UPDATE_FEED || busy) return snapshot();
     busy = true;
     state.phase = 'checking';
     state.error = '';
@@ -152,13 +155,13 @@ const Updates = (() => {
         state.update = r.update;
         state.phase = 'available';
         if (CORE.shouldNotify(prefs, r.update.version, Date.now(), !!r.update.critical)) {
-          notify((r.update.critical ? 'Critical update' : 'StarNet update') + ' v' + r.update.version + ' is ready in Update Center', r.update.critical ? 'warn' : 'gold', undefined, { kind: r.update.critical ? 'alert' : 'result', key: 'update-ready', go: { term: 'updates' } });
+          notify((r.update.critical ? 'Critical update' : 'AlphaVerse update') + ' v' + r.update.version + ' is ready in Update Center', r.update.critical ? 'warn' : 'gold', undefined, { kind: r.update.critical ? 'alert' : 'result', key: 'update-ready', go: { term: 'updates' } });
           prefs = CORE.recordNotified(prefs, r.update.version);
         }
       } else {
         state.update = null;
         state.phase = 'current';
-        if (manual) notify('StarNet is up to date', 'good');
+        if (manual) notify('AlphaVerse is up to date', 'good');
       }
       savePrefs();
     } catch (e) {
@@ -251,9 +254,10 @@ const Updates = (() => {
   }
 
   async function install(opts) {
+    if (!ALPHAVERSE_UPDATE_FEED) return { ok: false, error: 'AlphaVerse automatic updates are not configured.' };
     opts = opts || {};
     if (!TAURI || !CORE || busy || !state.update) {
-      notify('No StarNet update is ready to install', 'warn');
+      notify('No AlphaVerse update is ready to install', 'warn');
       return snapshot();
     }
     const Channel = TAURI.Channel;
@@ -286,7 +290,7 @@ const Updates = (() => {
     const drained = await preInstallDrain();
     if (!drained.ok) {
       state.phase = 'available';
-      state.error = 'State could not be verified on disk. The update was not installed; your current StarNet remains open.';
+      state.error = 'State could not be verified on disk. The update was not installed; your current AlphaVerse remains open.';
       busy = false;
       notify('Update paused - state verification failed', 'warn');
       emit();
@@ -318,7 +322,7 @@ const Updates = (() => {
     try {
       await invoke('starnet_update_install', { onEvent });
       state.phase = 'restarting';
-      notify('StarNet update installed - restarting', 'good');
+      notify('AlphaVerse update installed - restarting', 'good');
     } catch (e) {
       installing = false;   // install failed; the app lives on, so the quit guard resumes normally
       let thawError = null;
@@ -372,7 +376,7 @@ const Updates = (() => {
     savePrefs();
     state.update = null;
     state.phase = 'idle';
-    notify('StarNet v' + prefs.ignoredVersion + ' will be skipped', 'warn');
+    notify('AlphaVerse v' + prefs.ignoredVersion + ' will be skipped', 'warn');
     schedule();
     emit();
   }
@@ -418,7 +422,7 @@ const Updates = (() => {
 
   function html() {
     if (!TAURI) {
-      return '<div class="fb-empty">DESKTOP UPDATES ARE AVAILABLE IN THE PACKAGED STARNET APP.<br><span>This browser preview cannot install native releases.</span></div>';
+      return '<div class="fb-empty">ALPHAVERSE UPDATES ARE NOT CONFIGURED.<br><span>Build and run from source while the independent signing and release pipeline is under development.</span></div>';
     }
     const update = state.update;
     const pct = CORE.progress(state.downloaded, state.contentLength);
@@ -439,7 +443,7 @@ const Updates = (() => {
         // Channels-confirmed, and the choice is the Commander's, not a side effect.
         out += '<div class="up-guard">' +
           esc(guardN === 1 ? '1 AGENT IS STILL WORKING' : guardN + ' AGENTS ARE STILL WORKING') +
-          ' - INSTALLING RESTARTS STARNET AND KILLS ' + (guardN === 1 ? 'ITS RUN' : 'THEIR RUNS') + '.</div>' +
+          ' - INSTALLING RESTARTS ALPHAVERSE AND KILLS ' + (guardN === 1 ? 'ITS RUN' : 'THEIR RUNS') + '.</div>' +
           '<div class="up-actions">' +
           '<button class="bb sm" id="up-guard-wait">WAIT FOR AGENTS</button>' +
           '<button class="bb sm danger" id="up-install-force" ' + (busy ? 'disabled' : '') + '>INSTALL ANYWAY</button>' +
@@ -450,7 +454,7 @@ const Updates = (() => {
           (update.critical ? '' : '<button class="bb sm danger" id="up-ignore">SKIP VERSION</button>') + '</div></div>';
       }
     } else {
-      out += '<div class="up-empty">No update is pending. StarNet will keep checking in the background while automatic checks are on.</div>';
+      out += '<div class="up-empty">No update is pending. AlphaVerse will keep checking in the background while automatic checks are on.</div>';
     }
     if (state.phase === 'preparing' || state.phase === 'downloading' || state.phase === 'installing' || state.phase === 'restarting') {
       out += '<div class="up-progress"><div style="width:' + pct + '%"></div></div>' +
