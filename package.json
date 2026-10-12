@@ -23,7 +23,7 @@
     "node": ">=18"
   },
   "bin": {
-    "alphaverse": "bin/starnet.js"
+    "alphaverse": "bin/alphaverse.js"
   },
   "scripts": {
     "validate:raw": "node test/validate_map.js",
@@ -34,11 +34,11 @@
     "test": "npm run test:fast && npm run test:http",
     "website:stage": "node scripts/stage-website-deploy.mjs",
     "website:stage:check": "node scripts/stage-website-deploy.mjs --check",
-    "start": "node sidecar/index.js",
+    "start": "node scripts/alphaverse-start.cjs",
     "mcp:serve": "node sidecar/mcp/serve.js",
     "acp:serve": "node sidecar/acp/serve.js",
-    "app": "node sidecar/index.js",
-    "sidecar": "node sidecar/index.js",
+    "app": "node scripts/alphaverse-start.cjs",
+    "sidecar": "node scripts/alphaverse-start.cjs",
     "dev:seed": "node dev/seed.js",
     "dev:seed:keep": "node dev/seed.js --keep",
     "shoot": "node scripts/shoot.mjs",

@@ -33,7 +33,7 @@ const core = require('./lib/cli-core.js');
 
 const REPO = path.resolve(__dirname, '..');
 const SIDECAR = path.join(REPO, 'sidecar', 'index.js');
-const DESKTOP_IDENTIFIER = 'ai.skynet.harness';   // Tauri identifier — app_data_dir()/workspaces is the desktop station
+const DESKTOP_IDENTIFIER = 'io.github.artfied.alphaverse';   // Tauri identifier — app_data_dir()/workspaces is the desktop station
 const CANCEL_GRACE_MS = 5000;
 
 function log() { try { process.stderr.write(Array.prototype.join.call(arguments, ' ') + '\n'); } catch (_) {} }
@@ -53,7 +53,7 @@ function bareWorkspaces(env, platform) {
   const home = os.homedir() || '.';
   if (p === 'darwin') return path.join(home, 'Library', 'Application Support', DESKTOP_IDENTIFIER, 'workspaces');
   const base = e.LOCALAPPDATA || e.APPDATA || e.XDG_DATA_HOME || path.join(home, '.local', 'share');
-  const neu = path.join(base, 'StarNet', 'workspaces');
+  const neu = path.join(base, 'AlphaVerse', 'workspaces');
   const old = path.join(base, 'Skynet', 'workspaces');
   try { if (!fs.existsSync(neu) && fs.existsSync(old)) return old; } catch (_) {}
   return neu;
@@ -484,7 +484,7 @@ async function main() {
     if (path.resolve(ws) === path.resolve(desktop.workspace) && desktop.ownerAlive) { log('starnet: the desktop app is running on ' + ws + ' — nothing to bootstrap'); return 0; }
     const r = bootstrapWorkspace(ws, opts, process.env);
     if (!r.wrote) { log('starnet: ' + ws + ' — ' + r.reason); return 0; }
-    log('starnet: bootstrapped ' + ws + '\n  agent    ' + opts.name + ' (approvalMode full)\n  provider ' + (r.provider || 'openrouter (no credential found in the environment yet)') + (r.providerSource ? ' — from ' + r.providerSource : '') + '\n  model    ' + (r.model || '(none — pass --model or set STARNET_DEFAULT_MODEL)'));
+    log('alphaverse: bootstrapped ' + ws + '\n  agent    ' + opts.name + ' (approvalMode full)\n  provider ' + (r.provider || 'openrouter (no credential found in the environment yet)') + (r.providerSource ? ' — from ' + r.providerSource : '') + '\n  model    ' + (r.model || '(none — pass --model or set STARNET_DEFAULT_MODEL)'));
     return 0;
   }
 
