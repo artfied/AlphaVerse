@@ -1,17 +1,17 @@
 {
-  "name": "starnet-harness",
+  "name": "alphaverse-harness",
   "version": "0.13.2",
   "private": true,
-  "description": "A local-first, gamified desktop harness for building and running real AI-agent teams.",
+  "description": "AlphaVerse — a local-first AI multi-agent orchestration environment, derived from StarNet.",
   "license": "MIT",
   "author": "Andrew Sims",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/androoAGI/starnet.git"
+    "url": "git+https://github.com/artfied/AlphaVerse.git"
   },
-  "homepage": "https://github.com/androoAGI/starnet#readme",
+  "homepage": "https://github.com/artfied/AlphaVerse#readme",
   "bugs": {
-    "url": "https://github.com/androoAGI/starnet/issues"
+    "url": "https://github.com/artfied/AlphaVerse/issues"
   },
   "keywords": [
     "ai-agents",
@@ -23,7 +23,7 @@
     "node": ">=18"
   },
   "bin": {
-    "starnet": "bin/starnet.js"
+    "alphaverse": "bin/starnet.js"
   },
   "scripts": {
     "validate:raw": "node test/validate_map.js",
